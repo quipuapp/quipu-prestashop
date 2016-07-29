@@ -1,6 +1,6 @@
 <?php
 /**
-* 2007-2015 PrestaShop
+* 2007-2015 PrestaShop.
 *
 * NOTICE OF LICENSE
 *
@@ -23,12 +23,11 @@
 *  @license   http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
 *  International Registered Trademark & Property of PrestaShop SA
 */
-
 if (!defined('_PS_VERSION_')) {
     exit;
 }
 
-class Quipu extends Module
+class quipu extends Module
 {
     protected $output = '';
     public $api_connexion;
@@ -126,8 +125,9 @@ class Quipu extends Module
     {
         $this->postProcess();
 
-        if (Configuration::get('QUIPU_API_ID') != '' && Configuration::get('QUIPU_API_SECRET') != '')
+        if (Configuration::get('QUIPU_API_ID') != '' && Configuration::get('QUIPU_API_SECRET') != '') {
             $this->api_connexion = Quipu_Api_Connection::get_instance(Configuration::get('QUIPU_API_ID'), Configuration::get('QUIPU_API_SECRET'));
+        }
 
         $this->output .= $this->displayInformation();
         $this->output .= $this->displayFormIntegrationApi();
@@ -150,14 +150,15 @@ class Quipu extends Module
             'iso_code' => $this->context->language->iso_code,
         ));
 
-	$this->output .= $this->context->smarty->fetch($this->local_path.'views/templates/admin/information.tpl');
+        $this->output .= $this->context->smarty->fetch($this->local_path.'views/templates/admin/information.tpl');
     }
 
     private function displayFormIntegrationApi()
     {
         $languages = Language::getLanguages(false);
-        foreach ($languages as $k => $language)
-            $languages[$k]['is_default'] = (int)$language['id_lang'] == Configuration::get('PS_LANG_DEFAULT');
+        foreach ($languages as $k => $language) {
+            $languages[$k]['is_default'] = (int) $language['id_lang'] == Configuration::get('PS_LANG_DEFAULT');
+        }
 
         $helper = new HelperForm();
         $helper->module = $this;
@@ -166,7 +167,7 @@ class Quipu extends Module
         $helper->token = Tools::getAdminTokenLite('AdminModules');
         $helper->languages = $languages;
         $helper->currentIndex = AdminController::$currentIndex.'&configure='.$this->name;
-        $helper->default_form_language = (int)Configuration::get('PS_LANG_DEFAULT');
+        $helper->default_form_language = (int) Configuration::get('PS_LANG_DEFAULT');
         $helper->allow_employee_form_lang = true;
         $helper->toolbar_scroll = true;
         $helper->title = $this->displayName;
@@ -175,7 +176,7 @@ class Quipu extends Module
         $this->fields_form[0]['form'] = array(
             'tinymce' => false,
             'legend' => array(
-                'title' => $this->l('INTEGRATION WITH THE API')
+                'title' => $this->l('INTEGRATION WITH THE API'),
             ),
             'input' => array(
                 array(
@@ -206,15 +207,15 @@ class Quipu extends Module
         $helper->fields_value['QUIPU_API_ID'] = Configuration::get('QUIPU_API_ID');
         $helper->fields_value['QUIPU_API_SECRET'] = Configuration::get('QUIPU_API_SECRET');
 
-
         return $helper->generateForm($this->fields_form);
     }
 
     private function displayFormSettings()
     {
         $languages = Language::getLanguages(false);
-        foreach ($languages as $k => $language)
-            $languages[$k]['is_default'] = (int)$language['id_lang'] == Configuration::get('PS_LANG_DEFAULT');
+        foreach ($languages as $k => $language) {
+            $languages[$k]['is_default'] = (int) $language['id_lang'] == Configuration::get('PS_LANG_DEFAULT');
+        }
 
         $helper = new HelperForm();
         $helper->module = $this;
@@ -223,7 +224,7 @@ class Quipu extends Module
         $helper->token = Tools::getAdminTokenLite('AdminModules');
         $helper->languages = $languages;
         $helper->currentIndex = AdminController::$currentIndex.'&configure='.$this->name;
-        $helper->default_form_language = (int)Configuration::get('PS_LANG_DEFAULT');
+        $helper->default_form_language = (int) Configuration::get('PS_LANG_DEFAULT');
         $helper->allow_employee_form_lang = true;
         $helper->toolbar_scroll = true;
         $helper->title = $this->displayName;
@@ -232,21 +233,21 @@ class Quipu extends Module
         $this->fields_form[0]['form'] = array(
             'tinymce' => false,
             'legend' => array(
-                'title' => $this->l('GENERAL CONFIGURATION')
+                'title' => $this->l('GENERAL CONFIGURATION'),
             ),
             'input' => array(
                 array(
-		  'type' => 'select',
-		  'label' => $this->l('Order Status'),
-		  'name' => 'QUIPU_ORDER_STATE',
+          'type' => 'select',
+          'label' => $this->l('Order Status'),
+          'name' => 'QUIPU_ORDER_STATE',
                   'desc' => $this->l('Select the status of the order that Quipu will create an invoice for.'),
-		  'required' => false,
-		  'options' => array(
-			'query' => OrderState::getOrderStates($this->context->language->id),
-			'id' => 'id_order_state',
-			'name' => 'name'
-		  )
-		),
+          'required' => false,
+          'options' => array(
+            'query' => OrderState::getOrderStates($this->context->language->id),
+            'id' => 'id_order_state',
+            'name' => 'name',
+          ),
+        ),
             ),
             'submit' => array(
                 'name' => 'submitSettings',
@@ -263,11 +264,11 @@ class Quipu extends Module
     {
         //Configuration::updateValue('QUIPU_SYNCHRONIZATION', 1);
         $this->context->smarty->assign(array(
-            'synchronization' =>  Configuration::get('QUIPU_SYNCHRONIZATION'),
+            'synchronization' => Configuration::get('QUIPU_SYNCHRONIZATION'),
             'url_form' => AdminController::$currentIndex.'&configure='.$this->name.'&token='.Tools::getAdminTokenLite('AdminModules'),
         ));
 
-	$this->output .= $this->context->smarty->fetch($this->local_path.'views/templates/admin/synchronization.tpl');
+        $this->output .= $this->context->smarty->fetch($this->local_path.'views/templates/admin/synchronization.tpl');
     }
 
     public function create_quipu_invoice($order)
@@ -281,14 +282,14 @@ class Quipu extends Module
         $quipu_contact = new Quipu_Api_Contact($this->api_connexion);
 
         $data_contact = array(
-            "name" => $customer->firstname.' '.$customer->lastname,
-            "tax_id" => $address_invoice->dni,
-            "phone" => $address_invoice->phone,
-            "email" => $customer->email,
-            "address" => $address_invoice->address1,
-            "town" => $address_invoice->city,
-            "zip_code" => $address_invoice->postcode,
-            "country_code" => Tools::strtolower(Country::getIsoById($address_invoice->id_country))
+            'name' => $customer->firstname.' '.$customer->lastname,
+            'tax_id' => $address_invoice->dni,
+            'phone' => $address_invoice->phone,
+            'email' => $customer->email,
+            'address' => $address_invoice->address1,
+            'town' => $address_invoice->city,
+            'zip_code' => $address_invoice->postcode,
+            'country_code' => Tools::strtolower(Country::getIsoById($address_invoice->id_country)),
         );
 
         $quipu_contact->create_contact($data_contact);
@@ -297,22 +298,22 @@ class Quipu extends Module
 
         switch ($order->module) {
             case 'cod':
-                $quipu_payment_method = "cash";
+                $quipu_payment_method = 'cash';
                 break;
             case 'cheque':
-                $quipu_payment_method = "check";
+                $quipu_payment_method = 'check';
                 break;
             case 'paypal':
-                $quipu_payment_method = "paypal";
+                $quipu_payment_method = 'paypal';
                 break;
             case 'bankwire':
-                $quipu_payment_method = "bank_transfer";
+                $quipu_payment_method = 'bank_transfer';
                 break;
             case 'redsys':
-                $quipu_payment_method = "bank_card";
+                $quipu_payment_method = 'bank_card';
                 break;
             default:
-                $quipu_payment_method = "bank_card";
+                $quipu_payment_method = 'bank_card';
                 break;
         }
 
@@ -323,17 +324,17 @@ class Quipu extends Module
         $number = $invoice_prefix.$order->invoice_number;
 
         $data_quipu_invoice = array(
-            "number" => "$number",
-            "payment_method" => "$quipu_payment_method",
-            "issue_date" => "$ps_order_date"
+            'number' => "$number",
+            'payment_method' => "$quipu_payment_method",
+            'issue_date' => "$ps_order_date",
         );
 
         foreach ($order->getProducts() as $value) {
             $item = array(
-                "product" => "$value[product_name]",
-                "cost" => "$value[unit_price_tax_excl]",
-                "quantity" => "$value[product_quantity]",
-                "vat_per" => "$value[tax_rate]"
+                'product' => "$value[product_name]",
+                'cost' => "$value[unit_price_tax_excl]",
+                'quantity' => "$value[product_quantity]",
+                'vat_per' => "$value[tax_rate]",
             );
 
             $data_quipu_invoice['items'][] = $item;
@@ -344,10 +345,10 @@ class Quipu extends Module
             //$carrier = new Carrier($order->id_carrier, Configuration::get('PS_LANG_DEFAULT'));
             $tax_rate = Tax::getCarrierTaxRate($order->id_carrier, $order->id_address_delivery);
             $item_as_shipping = array(
-                "product" => "$shipping_text",
-                "cost" => "$order->total_shipping_tax_excl",
-                "quantity" => "1",
-                "vat_per" => "$tax_rate"
+                'product' => "$shipping_text",
+                'cost' => "$order->total_shipping_tax_excl",
+                'quantity' => '1',
+                'vat_per' => "$tax_rate",
             );
 
             $data_quipu_invoice['items'][] = $item_as_shipping;
@@ -373,7 +374,7 @@ class Quipu extends Module
         $order_date = $order_date[0];
         $order_date = date($order_date, time());
         $order_invoice = new OrderInvoice($order->invoice_number);
-        $quipu_invoice_id = (int)$order_invoice->note;
+        $quipu_invoice_id = (int) $order_invoice->note;
 
         //$id_order_slip = $this->getSlipByOrder($id_order);
 
@@ -392,10 +393,10 @@ class Quipu extends Module
             $order_slip_date = $order_slip_date[0];
             $refund_date = date($order_slip_date, time());
             $refund = array(
-                "number" => "$id_order_slip",
-                "invoice_id" => "$quipu_invoice_id",
-                "issue_date" => "$refund_date",
-                "refund_date" => "$refund_date"
+                'number' => "$id_order_slip",
+                'invoice_id' => "$quipu_invoice_id",
+                'issue_date' => "$refund_date",
+                'refund_date' => "$refund_date",
             );
 
             //d($refund);
@@ -411,10 +412,10 @@ class Quipu extends Module
                     $quantity = $value['product_quantity'];
 
                     $item = array(
-                        "product" => "$product->name",
-                        "cost" => "$unit_price_tax_excl",
-                        "quantity" => "$quantity",
-                        "vat_per" => "$tax_rate"
+                        'product' => "$product->name",
+                        'cost' => "$unit_price_tax_excl",
+                        'quantity' => "$quantity",
+                        'vat_per' => "$tax_rate",
                     );
 
                     $refund['items'][] = $item;
@@ -436,8 +437,7 @@ class Quipu extends Module
 
                     $refund['items'][] = $item_as_shipping;
                 }*/
-            }
-            else {
+            } else {
                 //rembolso estandard
                 $order_products = $order->getProducts();
                 foreach ($order_products as $product) {
@@ -447,10 +447,10 @@ class Quipu extends Module
                     $refund_name = $product['product_name'];
 
                     $item = array(
-                        "product" => "$refund_name",
-                        "cost" => "$unit_price_tax_excl",
-                        "quantity" => "$quantity",
-                        "vat_per" => "$tax_rate"
+                        'product' => "$refund_name",
+                        'cost' => "$unit_price_tax_excl",
+                        'quantity' => "$quantity",
+                        'vat_per' => "$tax_rate",
                     );
 
                     $refund['items'][] = $item;
@@ -462,10 +462,10 @@ class Quipu extends Module
                     $total_shipping_tax_excl = $order_slip->total_shipping_tax_excl * -1;
                     $shipping_text = $this->l('Shipping');
                     $item_as_shipping = array(
-                        "product" => "$shipping_text",
-                        "cost" => "$total_shipping_tax_excl",
-                        "quantity" => "1",
-                        "vat_per" => "$tax_rate"
+                        'product' => "$shipping_text",
+                        'cost' => "$total_shipping_tax_excl",
+                        'quantity' => '1',
+                        'vat_per' => "$tax_rate",
                     );
 
                     $refund['items'][] = $item_as_shipping;
@@ -478,10 +478,11 @@ class Quipu extends Module
 
     public function order_competed($params)
     {
-        if (Validate::isLoadedObject($params['newOrderStatus']))
+        if (Validate::isLoadedObject($params['newOrderStatus'])) {
             $id_order = $params['id_order'];
-        else
+        } else {
             $id_order = $params['order']->id;
+        }
 
         $this->api_connexion = Quipu_Api_Connection::get_instance(Configuration::get('QUIPU_API_ID'), Configuration::get('QUIPU_API_SECRET'));
         $order = new Order($id_order);
@@ -497,7 +498,7 @@ class Quipu extends Module
         $order_date = $order_date[0];
         $order_date = date($order_date, time());
         $order_invoice = new OrderInvoice($order->invoice_number);
-        $quipu_invoice_id = (int)$order_invoice->note;
+        $quipu_invoice_id = (int) $order_invoice->note;
 
         if (!empty($quipu_invoice_id)) {
             $this->api_connexion = Quipu_Api_Connection::get_instance(Configuration::get('QUIPU_API_ID'), Configuration::get('QUIPU_API_SECRET'));
@@ -512,10 +513,10 @@ class Quipu extends Module
             $refund_date = date($order_slip_date, time());*/
             $refund_date = date('Y-m-d', time());
             $refund = array(
-                "number" => "$id_order_slip",
-                "invoice_id" => "$quipu_invoice_id",
-                "issue_date" => "$refund_date",
-                "refund_date" => "$order_date"
+                'number' => "$id_order_slip",
+                'invoice_id' => "$quipu_invoice_id",
+                'issue_date' => "$refund_date",
+                'refund_date' => "$order_date",
             );
 
             //llega cuando devolucion parcial de 1 proudcto 50%
@@ -549,10 +550,10 @@ class Quipu extends Module
                             $refund_name = $product['product_name'];
 
                             $item = array(
-                                "product" => "$refund_name",
-                                "cost" => "$unit_price_tax_excl",
-                                "quantity" => "$quantity",
-                                "vat_per" => "$tax_rate"
+                                'product' => "$refund_name",
+                                'cost' => "$unit_price_tax_excl",
+                                'quantity' => "$quantity",
+                                'vat_per' => "$tax_rate",
                             );
 
                             $refund['items'][] = $item;
@@ -561,23 +562,22 @@ class Quipu extends Module
                 }
 
                 if (Tools::getValue('partialRefundShippingCost') > 0) {
-                    $partialRefundShippingCost = str_replace(",", ".", Tools::getValue('partialRefundShippingCost'));
-                    $total_shipping_tax_incl = (float)$partialRefundShippingCost;
+                    $partialRefundShippingCost = str_replace(',', '.', Tools::getValue('partialRefundShippingCost'));
+                    $total_shipping_tax_incl = (float) $partialRefundShippingCost;
                     $tax_rate = Tax::getCarrierTaxRate($order->id_carrier);
                     $total_shipping_tax_excl = $total_shipping_tax_incl / (1 + ($tax_rate / 100));
                     $total_shipping_tax_excl = $total_shipping_tax_excl * -1;
                     $shipping_text = $this->l('Shipping');
                     $item_as_shipping = array(
-                        "product" => "$shipping_text",
-                        "cost" => "$total_shipping_tax_excl",
-                        "quantity" => "1",
-                        "vat_per" => "$tax_rate"
+                        'product' => "$shipping_text",
+                        'cost' => "$total_shipping_tax_excl",
+                        'quantity' => '1',
+                        'vat_per' => "$tax_rate",
                     );
 
                     $refund['items'][] = $item_as_shipping;
                 }
-            }
-            else {
+            } else {
                 //rembolso estandard
                 $order_products = $order->getProducts();
                 foreach ($order_products as $product) {
@@ -587,10 +587,10 @@ class Quipu extends Module
                     $refund_name = $product['product_name'];
 
                     $item = array(
-                        "product" => "$refund_name",
-                        "cost" => "$unit_price_tax_excl",
-                        "quantity" => "$quantity",
-                        "vat_per" => "$tax_rate"
+                        'product' => "$refund_name",
+                        'cost' => "$unit_price_tax_excl",
+                        'quantity' => "$quantity",
+                        'vat_per' => "$tax_rate",
                     );
 
                     $refund['items'][] = $item;
@@ -602,10 +602,10 @@ class Quipu extends Module
                     $total_shipping_tax_excl = $order->total_shipping_tax_excl * -1;
                     $shipping_text = $this->l('Shipping');
                     $item_as_shipping = array(
-                        "product" => "$shipping_text",
-                        "cost" => "$total_shipping_tax_excl",
-                        "quantity" => "1",
-                        "vat_per" => "$tax_rate"
+                        'product' => "$shipping_text",
+                        'cost' => "$total_shipping_tax_excl",
+                        'quantity' => '1',
+                        'vat_per' => "$tax_rate",
                     );
 
                     $refund['items'][] = $item_as_shipping;
@@ -616,12 +616,14 @@ class Quipu extends Module
         }
     }
 
-    public static function getSlipByOrder($id_order) {
-        return Db::getInstance()->getValue('SELECT id_order_slip FROM '._DB_PREFIX_.'order_slip WHERE id_order ='.(int)$id_order);
+    public static function getSlipByOrder($id_order)
+    {
+        return Db::getInstance()->getValue('SELECT id_order_slip FROM '._DB_PREFIX_.'order_slip WHERE id_order ='.(int) $id_order);
     }
 
-    public static function getLastSlipByOrder($id_order) {
-        return Db::getInstance()->getValue('SELECT max(id_order_slip) FROM '._DB_PREFIX_.'order_slip WHERE id_order ='.(int)$id_order);
+    public static function getLastSlipByOrder($id_order)
+    {
+        return Db::getInstance()->getValue('SELECT max(id_order_slip) FROM '._DB_PREFIX_.'order_slip WHERE id_order ='.(int) $id_order);
     }
 
     public function hookActionValidateOrder($params)
