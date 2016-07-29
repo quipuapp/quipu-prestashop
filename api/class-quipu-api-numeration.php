@@ -28,21 +28,21 @@
     exit;
 } // Exit if accessed directly*/
 
-if (!class_exists('Quipu_Api')) {
+if (!class_exists('QuipuApi')) {
     include_once 'class-quipu-api.php';
 }
 
-class Quipu_Api_Numeration extends Quipu_Api
+class QuipuApiNumeration extends QuipuApi
 {
-    public function __construct(Quipu_Api_Connection $api_connection)
+    public function __construct(QuipuApiConnection $api_connection)
     {
         parent::__construct($api_connection);
 
         // Set Endpoint
-        $this->set_endpoint('numbering_series');
+        $this->setEndpoint('numbering_series');
     }
 
-    public function create_series($prefix, $amending = false)
+    public function createSeries($prefix, $amending = false)
     {
         if (empty($prefix)) {
             throw new Exception('Create: passed prefix variable is empty.');
@@ -50,8 +50,8 @@ class Quipu_Api_Numeration extends Quipu_Api
 
         try {
             // Try to fetch existing prefix
-            $this->get_series($prefix, $amending);
-            $id = $this->get_id();
+            $this->getSeries($prefix, $amending);
+            $id = $this->getId();
             if (empty($id)) {
                 $postData = array(
                     'data' => array(
@@ -65,30 +65,30 @@ class Quipu_Api_Numeration extends Quipu_Api
                     ),
                 );
 
-                $this->create_request($postData);
+                $this->createRequest($postData);
             }
         } catch (Exception $e) {
             throw $e;
         }
     }
 
-    public function create_refund_series($prefix)
+    public function createRefundSeries($prefix)
     {
         try {
-            $this->create_series($prefix, true);
+            $this->createSeries($prefix, true);
         } catch (Exception $e) {
             throw $e;
         }
     }
 
-    public function get_series($prefix, $amending)
+    public function getSeries($prefix, $amending)
     {
         if (empty($prefix)) {
             throw new Exception('Get: passed prefix variable is empty.');
         }
 
         try {
-            $this->get_filter_request("?filter[prefix]=$prefix&filter[amending]=$amending");
+            $this->getFilterRequest("?filter[prefix]=$prefix&filter[amending]=$amending");
         } catch (Exception $e) {
             throw $e;
         }

@@ -28,21 +28,21 @@
     exit;
 } // Exit if accessed directly*/
 
-if (!class_exists('Quipu_Api')) {
+if (!class_exists('QuipuApi')) {
     include_once 'class-quipu-api.php';
 }
 
-class Quipu_Api_Contact extends Quipu_Api
+class QuipuApiContact extends QuipuApi
 {
-    public function __construct(Quipu_Api_Connection $api_connection)
+    public function __construct(QuipuApiConnection $api_connection)
     {
         parent::__construct($api_connection);
 
         // Set Endpoint
-        $this->set_endpoint('contacts');
+        $this->setEndpoint('contacts');
     }
 
-    private function __create_contact($contact)
+    private function __createContact($contact)
     {
         if (empty($contact['name'])) {
             throw new Exception('Create: no contact name passed.');
@@ -65,37 +65,37 @@ class Quipu_Api_Contact extends Quipu_Api
                 ),
             );
 
-            $this->create_request($postData);
+            $this->createRequest($postData);
         } catch (Exception $e) {
             throw $e;
         }
     }
 
-    public function create_contact($contact)
+    public function createContact($contact)
     {
         try {
             if ($contact['tax_id']) {
                 //d($contact['tax_id']);
-                $this->get_contact($contact['tax_id']);
+                $this->getContact($contact['tax_id']);
 
-                $id = $this->get_id();
+                $id = $this->getId();
                 if (empty($id)) {
-                    $this->__create_contact($contact);
+                    $this->__createContact($contact);
                 }
             } else {
-                $this->__create_contact($contact);
+                $this->__createContact($contact);
             }
         } catch (Exception $e) {
             throw $e;
         }
     }
 
-    public function get_contact($tax_id)
+    public function getContact($tax_id)
     {
         if (empty($tax_id)) {
             throw new Exception('Get: no tax id passed.');
         }
 
-        return $this->get_filter_request("?filter[tax_id]=$tax_id");
+        return $this->getFilterRequest("?filter[tax_id]=$tax_id");
     }
 }

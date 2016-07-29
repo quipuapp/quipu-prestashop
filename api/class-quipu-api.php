@@ -27,10 +27,10 @@
 /*if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }*/ // Exit if accessed directly
-if (!class_exists('Quipu_Api_Connection')) {
+if (!class_exists('QuipuApiConnection')) {
     include_once 'class-quipu-api-connection.php';
 }
-abstract class Quipu_Api
+abstract class QuipuApi
 {
     /**
      * The request endpoint.
@@ -51,7 +51,7 @@ abstract class Quipu_Api
      */
     protected $response = null;
     /**
-     * @var Quipu_Api_Connection
+     * @var QuipuApiConnection
      */
     private $api_connection;
     /**
@@ -59,11 +59,11 @@ abstract class Quipu_Api
      */
     protected $id = '';
     /**
-     * Quipu_Api constructor.
+     * QuipuApi constructor.
      *
      * @param string $api_key, $api_secret
      */
-    public function __construct(Quipu_Api_Connection $api_connection)
+    public function __construct(QuipuApiConnection $api_connection)
     {
         $this->api_connection = $api_connection;
     }
@@ -72,7 +72,7 @@ abstract class Quipu_Api
      *
      * @param $id
      */
-    public function set_id($id)
+    public function setId($id)
     {
         $this->id = $id;
     }
@@ -81,7 +81,7 @@ abstract class Quipu_Api
      *
      * @return $id
      */
-    public function get_id()
+    public function getId()
     {
         return $this->id;
     }
@@ -90,7 +90,7 @@ abstract class Quipu_Api
      *
      * @param $endpoint
      */
-    protected function set_endpoint($endpoint)
+    protected function setEndpoint($endpoint)
     {
         $this->endpoint = $endpoint;
     }
@@ -99,21 +99,21 @@ abstract class Quipu_Api
      *
      * @return string
      */
-    protected function get_endpoint()
+    protected function getEndpoint()
     {
         return $this->endpoint;
     }
     /**
      * @return string
      */
-    protected function get_query()
+    protected function getQuery()
     {
         return $this->query;
     }
     /**
      * @param string $query
      */
-    protected function set_query($query)
+    protected function setQuery($query)
     {
         $this->query = $query;
     }
@@ -122,7 +122,7 @@ abstract class Quipu_Api
      *
      * @return array
      */
-    public function get_response()
+    public function getResponse()
     {
         return $this->response;
     }
@@ -131,37 +131,37 @@ abstract class Quipu_Api
      *
      * @return bool
      */
-    private function clear_response()
+    private function clearResponse()
     {
         $this->response = null;
 
         return true;
     }
-    public function create_request($post_data)
+    public function createRequest($post_data)
     {
         try {
-            $this->response = $this->api_connection->post_request($this->endpoint, $post_data);
+            $this->response = $this->api_connection->postRequest($this->endpoint, $post_data);
             if (isset($this->response['data']['id'])) {
-                $this->set_id($this->response['data']['id']);
+                $this->setId($this->response['data']['id']);
             }
         } catch (Exception $e) {
             throw $e;
         }
     }
-    public function get_request()
+    public function getRequest()
     {
         try {
-            $this->response = $this->api_connection->get_request($this->endpoint);
+            $this->response = $this->api_connection->getRequest($this->endpoint);
         } catch (Exception $e) {
             throw $e;
         }
     }
-    public function get_filter_request($query_string)
+    public function getFilterRequest($query_string)
     {
         try {
-            $this->response = $this->api_connection->get_request($this->endpoint.$query_string);
+            $this->response = $this->api_connection->getRequest($this->endpoint.$query_string);
             if (isset($this->response['data'][0]['id'])) {
-                $this->set_id($this->response['data'][0]['id']);
+                $this->setId($this->response['data'][0]['id']);
             }
         } catch (Exception $e) {
             throw $e;

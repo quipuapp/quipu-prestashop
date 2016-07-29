@@ -27,7 +27,7 @@ if (!defined('_PS_VERSION_')) {
     exit;
 }
 
-class quipu extends Module
+class Quipu extends Module
 {
     protected $output = '';
     public $api_connexion;
@@ -56,8 +56,8 @@ class quipu extends Module
 
     public function install()
     {
-        Configuration::updateValue('QUIPU_API_ID', '');
-        Configuration::updateValue('QUIPU_API_SECRET', '');
+        Configuration::updateValue('QuipuApi_ID', '');
+        Configuration::updateValue('QuipuApi_SECRET', '');
         Configuration::updateValue('QUIPU_ORDER_STATE', 2);
         Configuration::updateValue('QUIPU_SYNCHRONIZATION', 0);
 
@@ -69,8 +69,8 @@ class quipu extends Module
 
     public function uninstall()
     {
-        Configuration::deleteByName('QUIPU_API_ID');
-        Configuration::deleteByName('QUIPU_API_SECRET');
+        Configuration::deleteByName('QuipuApi_ID');
+        Configuration::deleteByName('QuipuApi_SECRET');
         Configuration::deleteByName('QUIPU_ORDER_STATE');
         Configuration::deleteByName('QUIPU_INVOICE_PREFIX');
         Configuration::deleteByName('QUIPU_SYNCHRONIZATION');
@@ -81,12 +81,12 @@ class quipu extends Module
     protected function postProcess()
     {
         if (Tools::isSubmit('submitIntegrationApi')) {
-            Configuration::updateValue('QUIPU_API_ID', Tools::getValue('QUIPU_API_ID'));
-            Configuration::updateValue('QUIPU_API_SECRET', Tools::getValue('QUIPU_API_SECRET'));
+            Configuration::updateValue('QuipuApi_ID', Tools::getValue('QuipuApi_ID'));
+            Configuration::updateValue('QuipuApi_SECRET', Tools::getValue('QuipuApi_SECRET'));
 
-            //$this->api_connexion = Quipu_Api_Connection::get_instance(Configuration::get('QUIPU_API_ID'), Configuration::get('QUIPU_API_SECRET'));
+            //$this->api_connexion = QuipuApiConnection::getInstance(Configuration::get('QuipuApi_ID'), Configuration::get('QuipuApi_SECRET'));
 
-            //if ($this->api_connexion->get_response())
+            //if ($this->api_connexion->getResponse())
                 $this->output .= $this->displayConfirmation($this->l('Settings updated ok.'));
             /*else
                 $this->output .= $this->displayError($this->l('Error API Connection.'));*/
@@ -98,13 +98,13 @@ class quipu extends Module
         }
 
         if (Tools::isSubmit('submitSynchronization')) {
-            $this->api_connexion = Quipu_Api_Connection::get_instance(Configuration::get('QUIPU_API_ID'), Configuration::get('QUIPU_API_SECRET'));
+            $this->api_connexion = QuipuApiConnection::getInstance(Configuration::get('QuipuApi_ID'), Configuration::get('QuipuApi_SECRET'));
             //$orders = Order::getOrdersIdByDate('1999-01-01', date('Y-m-d'));
             $order_invoices = OrderInvoice::getByDateInterval('1999-01-01', date('Y-m-d'));
             if ($order_invoices) {
                 foreach ($order_invoices as $order_invoice) {
                     $order = new Order($order_invoice->id_order);
-                    $this->create_quipu_invoice($order);
+                    $this->createQuipuInvoice($order);
                 }
             }
 
@@ -112,7 +112,7 @@ class quipu extends Module
             if ($order_slips) {
                 foreach ($order_slips as $id_order_slip) {
                     $order_slip = new OrderSlip($id_order_slip);
-                    $this->create_quipu_refund($order_slip);
+                    $this->createQuipuRefund($order_slip);
                 }
             }
 
@@ -125,8 +125,8 @@ class quipu extends Module
     {
         $this->postProcess();
 
-        if (Configuration::get('QUIPU_API_ID') != '' && Configuration::get('QUIPU_API_SECRET') != '') {
-            $this->api_connexion = Quipu_Api_Connection::get_instance(Configuration::get('QUIPU_API_ID'), Configuration::get('QUIPU_API_SECRET'));
+        if (Configuration::get('QuipuApi_ID') != '' && Configuration::get('QuipuApi_SECRET') != '') {
+            $this->api_connexion = QuipuApiConnection::getInstance(Configuration::get('QuipuApi_ID'), Configuration::get('QuipuApi_SECRET'));
         }
 
         $this->output .= $this->displayInformation();
@@ -182,7 +182,7 @@ class quipu extends Module
                 array(
                     'type' => 'text',
                     'label' => $this->l('API key'),
-                    'name' => 'QUIPU_API_ID',
+                    'name' => 'QuipuApi_ID',
                     'desc' => $this->l('You can find this information on your Quipu account under: Integrations -> Settings -> API.'),
                     'required' => true,
                     'lang' => false,
@@ -191,7 +191,7 @@ class quipu extends Module
                 array(
                     'type' => 'text',
                     'label' => $this->l('API Secret'),
-                    'name' => 'QUIPU_API_SECRET',
+                    'name' => 'QuipuApi_SECRET',
                     'desc' => $this->l('You can also find this information on your Quipu account under: Integrations -> Settings -> API'),
                     'required' => true,
                     'lang' => false,
@@ -204,8 +204,8 @@ class quipu extends Module
             ),
         );
 
-        $helper->fields_value['QUIPU_API_ID'] = Configuration::get('QUIPU_API_ID');
-        $helper->fields_value['QUIPU_API_SECRET'] = Configuration::get('QUIPU_API_SECRET');
+        $helper->fields_value['QuipuApi_ID'] = Configuration::get('QuipuApi_ID');
+        $helper->fields_value['QuipuApi_SECRET'] = Configuration::get('QuipuApi_SECRET');
 
         return $helper->generateForm($this->fields_form);
     }
@@ -271,15 +271,15 @@ class quipu extends Module
         $this->output .= $this->context->smarty->fetch($this->local_path.'views/templates/admin/synchronization.tpl');
     }
 
-    public function create_quipu_invoice($order)
+    public function createQuipuInvoice($order)
     {
         $customer = new Customer($order->id_customer);
         //$address_delivery = new Address($order->id_address_delivery);
         $address_invoice = new Address($order->id_address_invoice);
 
-        $quipu_num = new Quipu_Api_Numeration($this->api_connexion);
-        //$quipu_num->create_series($order->invoice_number);
-        $quipu_contact = new Quipu_Api_Contact($this->api_connexion);
+        $quipu_num = new QuipuApiNumeration($this->api_connexion);
+        //$quipu_num->createSeries($order->invoice_number);
+        $quipu_contact = new QuipuApiContact($this->api_connexion);
 
         $data_contact = array(
             'name' => $customer->firstname.' '.$customer->lastname,
@@ -292,9 +292,9 @@ class quipu extends Module
             'country_code' => Tools::strtolower(Country::getIsoById($address_invoice->id_country)),
         );
 
-        $quipu_contact->create_contact($data_contact);
+        $quipu_contact->createContact($data_contact);
 
-        $quipu_invoice = new Quipu_Api_Invoice($this->api_connexion);
+        $quipu_invoice = new QuipuApiInvoice($this->api_connexion);
 
         switch ($order->module) {
             case 'cod':
@@ -354,19 +354,19 @@ class quipu extends Module
             $data_quipu_invoice['items'][] = $item_as_shipping;
         }
 
-        $quipu_invoice->set_contact($quipu_contact);
-        $quipu_invoice->set_numeration($quipu_num);
-        $quipu_invoice->create_invoice($data_quipu_invoice);
+        $quipu_invoice->setContact($quipu_contact);
+        $quipu_invoice->setNumeration($quipu_num);
+        $quipu_invoice->createInvoice($data_quipu_invoice);
 
         //save note quipu
-        $quipu_invoice_id = $quipu_invoice->get_id();
+        $quipu_invoice_id = $quipu_invoice->getId();
         $order_invoice = new OrderInvoice($order->invoice_number);
         $order_invoice->note = $quipu_invoice_id;
         $order_invoice->update();
         //Db::getInstance()->Execute('UPDATE `'._DB_PREFIX_.'order_invoice` SET `note` = "'.$quipu_invoice_id.'" WHERE id_order_invoice = '.(int)$order->invoice_number);
     }
 
-    public function create_quipu_refund($order_slip)
+    public function createQuipuRefund($order_slip)
     {
         $id_order = $order_slip->id_order;
         $order = new Order($id_order);
@@ -382,11 +382,11 @@ class quipu extends Module
             $id_order_slip = $id_order_slip[];*/
 
         if (!empty($quipu_invoice_id)) {
-            //$this->api_connexion = Quipu_Api_Connection::get_instance(Configuration::get('QUIPU_API_ID'), Configuration::get('QUIPU_API_SECRET'));
-            $quipu_num = new Quipu_Api_Numeration($this->api_connexion);
-            //$quipu_num->create_refund_series($this->refund_num_series);
-            $quipu_invoice = new Quipu_Api_Invoice($this->api_connexion);
-            $quipu_invoice->set_numeration($quipu_num);
+            //$this->api_connexion = QuipuApiConnection::getInstance(Configuration::get('QuipuApi_ID'), Configuration::get('QuipuApi_SECRET'));
+            $quipu_num = new QuipuApiNumeration($this->api_connexion);
+            //$quipu_num->createRefundSeries($this->refund_num_series);
+            $quipu_invoice = new QuipuApiInvoice($this->api_connexion);
+            $quipu_invoice->setNumeration($quipu_num);
             $id_order_slip = 'R-'.$order_slip->id;
             //$refund_date = date('Y-m-d', time());
             $order_slip_date = explode(' ', $order_slip->date_add);
@@ -472,11 +472,11 @@ class quipu extends Module
                 }
             }
 
-            $quipu_invoice->refund_invoice($refund);
+            $quipu_invoice->refundInvoice($refund);
         }
     }
 
-    public function order_competed($params)
+    public function orderCompleted($params)
     {
         if (Validate::isLoadedObject($params['newOrderStatus'])) {
             $id_order = $params['id_order'];
@@ -484,12 +484,12 @@ class quipu extends Module
             $id_order = $params['order']->id;
         }
 
-        $this->api_connexion = Quipu_Api_Connection::get_instance(Configuration::get('QUIPU_API_ID'), Configuration::get('QUIPU_API_SECRET'));
+        $this->api_connexion = QuipuApiConnection::getInstance(Configuration::get('QuipuApi_ID'), Configuration::get('QuipuApi_SECRET'));
         $order = new Order($id_order);
-        $this->create_quipu_invoice($order);
+        $this->createQuipuInvoice($order);
     }
 
-    public function order_refund($params)
+    public function orderRefund($params)
     {
         //d($_POST);
         $id_order = $params['order']->id;
@@ -501,11 +501,11 @@ class quipu extends Module
         $quipu_invoice_id = (int) $order_invoice->note;
 
         if (!empty($quipu_invoice_id)) {
-            $this->api_connexion = Quipu_Api_Connection::get_instance(Configuration::get('QUIPU_API_ID'), Configuration::get('QUIPU_API_SECRET'));
-            $quipu_num = new Quipu_Api_Numeration($this->api_connexion);
-            //$quipu_num->create_refund_series($this->refund_num_series);
-            $quipu_invoice = new Quipu_Api_Invoice($this->api_connexion);
-            $quipu_invoice->set_numeration($quipu_num);
+            $this->api_connexion = QuipuApiConnection::getInstance(Configuration::get('QuipuApi_ID'), Configuration::get('QuipuApi_SECRET'));
+            $quipu_num = new QuipuApiNumeration($this->api_connexion);
+            //$quipu_num->createRefundSeries($this->refund_num_series);
+            $quipu_invoice = new QuipuApiInvoice($this->api_connexion);
+            $quipu_invoice->setNumeration($quipu_num);
             $id_order_slip = 'R-'.$this->getLastSlipByOrder($id_order);
             /*$order_slip = new OrderSlip($this->getSlipByOrder($id_order));
             $order_slip_date = explode(' ', $order_slip->date_add);
@@ -612,7 +612,7 @@ class quipu extends Module
                 }
             }
 
-            $quipu_invoice->refund_invoice($refund);
+            $quipu_invoice->refundInvoice($refund);
         }
     }
 
@@ -629,19 +629,19 @@ class quipu extends Module
     public function hookActionValidateOrder($params)
     {
         if (Configuration::get('QUIPU_ORDER_STATE') == $params['order']->current_state) {
-            $this->order_competed($params);
+            $this->orderCompleted($params);
         }
     }
 
     public function hookActionOrderStatusPostUpdate($params)
     {
         if (Configuration::get('QUIPU_ORDER_STATE') == $params['newOrderStatus']->id) {
-            $this->order_competed($params);
+            $this->orderCompleted($params);
         }
     }
 
     public function hookActionOrderSlipAdd($params)
     {
-        $this->order_refund($params);
+        $this->orderRefund($params);
     }
 }

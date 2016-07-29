@@ -28,53 +28,53 @@
     exit;
 } // Exit if accessed directly*/
 
-if (!class_exists('Quipu_Api')) {
+if (!class_exists('QuipuApi')) {
     include_once 'class-quipu-api.php';
 }
 /*
-if ( ! class_exists( 'Quipu_Api_Numeration' ) ) {
+if ( ! class_exists( 'QuipuApiNumeration' ) ) {
     include_once( 'quipu-api/class-quipu-api-numeration.php' );
 }
 
-if ( ! class_exists( 'Quipu_Api_Contact' ) ) {
+if ( ! class_exists( 'QuipuApiContact' ) ) {
     include_once( 'quipu-api/class-quipu-api-contact.php' );
 }
 */
 
-class Quipu_Api_Invoice extends Quipu_Api
+class QuipuApiInvoice extends QuipuApi
 {
     /**
-     * @var Quipu_Api_Contact
+     * @var QuipuApiContact
      */
     private $contact;
 
     /**
-     * @var Quipu_Api_Numeration
+     * @var QuipuApiNumeration
      */
     private $num_series;
 
-    public function __construct(Quipu_Api_Connection $api_connection)
+    public function __construct(QuipuApiConnection $api_connection)
     {
         parent::__construct($api_connection);
 
         // Set Endpoint
-        $this->set_endpoint('invoices');
+        $this->setEndpoint('invoices');
     }
 
-    public function set_contact(Quipu_Api_Contact $contact)
+    public function setContact(QuipuApiContact $contact)
     {
         $this->contact = $contact;
     }
 
-    public function set_numeration(Quipu_Api_Numeration $num_series)
+    public function setNumeration(QuipuApiNumeration $num_series)
     {
         $this->num_series = $num_series;
     }
 
-    public function create_invoice($order)
+    public function createInvoice($order)
     {
-        $contact_id = $this->contact->get_id();
-        $num_series_id = $this->num_series->get_id();
+        $contact_id = $this->contact->getId();
+        $num_series_id = $this->num_series->getId();
 
         if (empty($contact_id)) {
             throw new Exception('Create: no contact id set.');
@@ -130,15 +130,15 @@ class Quipu_Api_Invoice extends Quipu_Api
         }
 
         try {
-            $this->create_request($postData);
+            $this->createRequest($postData);
         } catch (Exception $e) {
             throw $e;
         }
     }
 
-    public function refund_invoice($refund)
+    public function refundInvoice($refund)
     {
-        $num_series_id = $this->num_series->get_id();
+        $num_series_id = $this->num_series->getId();
 
         if (empty($refund['invoice_id'])) {
             throw new Exception('Refund: no invoice id passed.');
@@ -189,7 +189,7 @@ class Quipu_Api_Invoice extends Quipu_Api
         }
 
         try {
-            $this->create_request($postData);
+            $this->createRequest($postData);
         } catch (Exception $e) {
             throw $e;
         }

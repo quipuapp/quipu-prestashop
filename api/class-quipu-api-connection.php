@@ -28,7 +28,7 @@
     exit;
 }*/ // Exit if accessed directly
 // Singleton API connection class
-class Quipu_Api_Connection
+class QuipuApiConnection
 {
     /**
      * @var string API URL
@@ -63,19 +63,19 @@ class Quipu_Api_Connection
      */
     private $error_msg;
     /**
-     * @var Quipu_Api_Connection
+     * @var QuipuApiConnection
      */
     private static $_instance; //The single instance
     /*
      * Get an instance of the Database
      * @return Instance
     */
-    public static function get_instance($api_key, $api_secret)
+    public static function getInstance($api_key, $api_secret)
     {
         // If no instance then make one, else if the API key and secret are not the same i.e. new account/connection
         if ((!self::$_instance)) {
             self::$_instance = new self($api_key, $api_secret);
-        } elseif (!(self::$_instance->is_key_match($api_key, $api_secret))) {
+        } elseif (!(self::$_instance->isKeyMatch($api_key, $api_secret))) {
             self::$_instance = new self($api_key, $api_secret);
         }
 
@@ -86,7 +86,7 @@ class Quipu_Api_Connection
      *
      * @param string $api_key, $api_secret
      */
-    private function is_key_match($api_key, $api_secret)
+    private function isKeyMatch($api_key, $api_secret)
     {
         if (($this->api_key == $api_key) && ($this->api_secret == $api_secret)) {
             return true;
@@ -95,7 +95,7 @@ class Quipu_Api_Connection
         }
     }
     /**
-     * Quipu_Api constructor.
+     * QuipuApi constructor.
      *
      * @param string $api_key, $api_secret
      */
@@ -116,10 +116,10 @@ class Quipu_Api_Connection
     /**
      * @return string
      */
-    protected function get_access_token()
+    protected function getAccessToken()
     {
-        if ($this->is_access_token_empty() || $this->is_token_expired()) {
-            if ($this->request_access_token() === false) {
+        if ($this->isAccessTokenEmpty() || $this->isTokenExpired()) {
+            if ($this->requestAccessToken() === false) {
                 return false;
             }
         }
@@ -129,14 +129,14 @@ class Quipu_Api_Connection
     /**
      * @param string $access_token
      */
-    protected function set_access_token($access_token)
+    protected function setAccessToken($access_token)
     {
         $this->access_token = $access_token;
     }
     /**
      * @return bool
      */
-    protected function is_access_token_empty()
+    protected function isAccessTokenEmpty()
     {
         return empty($this->access_token);
     }
@@ -145,7 +145,7 @@ class Quipu_Api_Connection
      *
      * @return array
      */
-    public function get_response()
+    public function getResponse()
     {
         return $this->response;
     }
@@ -154,7 +154,7 @@ class Quipu_Api_Connection
      *
      * @return bool
      */
-    private function clear_response()
+    private function clearResponse()
     {
         $this->response = null;
 
@@ -165,7 +165,7 @@ class Quipu_Api_Connection
      *
      * @return bool
      */
-    private function do_keys_exist()
+    private function doKeysExist()
     {
         // Check keys
         if (empty($this->api_key) || empty($this->api_secret)) {
@@ -184,7 +184,7 @@ class Quipu_Api_Connection
      *
      * @return string
      */
-    private function is_token_expired()
+    private function isTokenExpired()
     {
         if ($this->token_expires < time()) {
             return true;
@@ -200,7 +200,7 @@ class Quipu_Api_Connection
      *
      * @return string
      */
-    private function request_access_token()
+    private function requestAccessToken()
     {
         $curl = curl_init(self::API_URL.self::AUTH_URL);
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
@@ -227,14 +227,14 @@ class Quipu_Api_Connection
             return true;
         }
     }
-    private function init_request($url)
+    private function initRequest($url)
     {
         // Check if required settings are set
-        if (false === $this->do_keys_exist()) {
+        if (false === $this->doKeysExist()) {
             return false;
         }
         // Get access token to make API call
-        $access_token = $this->get_access_token();
+        $access_token = $this->getAccessToken();
         if ($access_token === false) {
             return false;
         }
@@ -245,7 +245,7 @@ class Quipu_Api_Connection
 
         return true;
     }
-    private function finish_request()
+    private function finishRequest()
     {
         $response = curl_exec($this->curl);
         curl_close($this->curl);
@@ -275,9 +275,9 @@ class Quipu_Api_Connection
      *
      * @return bool
      */
-    public function post_request($endpoint, $post_data)
+    public function postRequest($endpoint, $post_data)
     {
-        if ($this->init_request(self::API_URL.$endpoint) === false) {
+        if ($this->initRequest(self::API_URL.$endpoint) === false) {
             throw new Exception($this->error_msg);
         }
 
@@ -293,7 +293,7 @@ class Quipu_Api_Connection
                 curl_setopt($this->curl, CURLOPT_CUSTOMREQUEST, 'DELETE');
                 break;
         */
-        $res = $this->finish_request();
+        $res = $this->finishRequest();
         if (!$res) {
             throw new Exception('POST: '.$endpoint.' - Error: '.$this->error_msg.' - Args: '.print_r($post_data, true));
         }
@@ -310,12 +310,12 @@ class Quipu_Api_Connection
      *
      * @return bool
      */
-    public function get_request($endpoint)
+    public function getRequest($endpoint)
     {
-        if ($this->init_request(self::API_URL.$endpoint) === false) {
+        if ($this->initRequest(self::API_URL.$endpoint) === false) {
             throw new Exception($this->error_msg);
         }
-        $res = $this->finish_request();
+        $res = $this->finishRequest();
         if (!$res) {
             throw new Exception('GET: '.$endpoint.' - Error: '.$this->error_msg);
         }
