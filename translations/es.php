@@ -1,0 +1,30 @@
+<?php
+
+global $_MODULE;
+$_MODULE = array();
+$_MODULE['<{quipu}prestashop>quipu_048d393e2f3e1c780468cef22f48db5d'] = 'Quipu';
+$_MODULE['<{quipu}prestashop>quipu_d523a36d88ef7f82c20d800f216da4c4'] = 'Integración contable Quipu con PrestaShop.';
+$_MODULE['<{quipu}prestashop>quipu_bfccabfff6e0b257ee0ee0c1ed28fbfc'] = 'La configuración ha sido guardada correctamente.';
+$_MODULE['<{quipu}prestashop>quipu_6e67539b54faac66d2a821b593232c8c'] = 'Error al conectar con la API.';
+$_MODULE['<{quipu}prestashop>quipu_d008af6b413a8b46b522b64901aa1154'] = 'Sincronización realizada.';
+$_MODULE['<{quipu}prestashop>quipu_3a64dd99b3d570c2efa620e5f633aa25'] = 'INTEGRACIÓN CON LA API';
+$_MODULE['<{quipu}prestashop>quipu_656a6828d7ef1bb791e42087c4b5ee6e'] = 'Clave de la API';
+$_MODULE['<{quipu}prestashop>quipu_f5c6ebf547ee8c21e312bb01d3c681b6'] = 'Esta información la encontrarás en tu cuenta de Quipu, en Configuración -> Integraciones -> API.';
+$_MODULE['<{quipu}prestashop>quipu_1ddec0f92f297e937bdf409977df0c02'] = 'API Secreta';
+$_MODULE['<{quipu}prestashop>quipu_7f0d94d2a0a8e21df0d4b97d3a95e9b9'] = 'Esta información la encontrarás en tu cuenta de Quipu, en Configuración -> Integraciones -> API';
+$_MODULE['<{quipu}prestashop>quipu_c9cc8cce247e49bae79f15173ce97354'] = 'Guardar';
+$_MODULE['<{quipu}prestashop>quipu_4a9cc7ddfd6e169a1b434d6839d91a7e'] = 'CONFIGURACIÓN GENERAL';
+$_MODULE['<{quipu}prestashop>quipu_bbd3a18e6d45b8331cf8a715f3f0008d'] = 'Estado del pedido';
+$_MODULE['<{quipu}prestashop>quipu_72a7dfd23c7fa533a664a351d0aa1533'] = 'Selecciona el estado del pedido que hará que se cree una factura en Quipu.';
+$_MODULE['<{quipu}prestashop>quipu_ea9cf7e47ff33b2be14e6dd07cbcefc6'] = 'Envío';
+$_MODULE['<{quipu}prestashop>information_2af72f100c356273d46284f6fd1dfc08'] = 'versión';
+$_MODULE['<{quipu}prestashop>information_575b8f5a0d2a183505905a285d8114ca'] = '¡Muchas gracias por instalar';
+$_MODULE['<{quipu}prestashop>information_a440630beee447dbcbd496fa0faa8a2d'] = 'A partir de ahora podrás mantener controladas las ventas de tu tienda online gracias a las facturas automáticas que creará Quipu cada vez que un cliente compre uno de tus productos.';
+$_MODULE['<{quipu}prestashop>information_7f94ad1266839980966fc00fa388dfa7'] = 'Si aún no tienes una cuenta en Quipu, pruébalo gratis';
+$_MODULE['<{quipu}prestashop>information_6c92285fa6d3e827b198d120ea3ac674'] = 'aquí';
+$_MODULE['<{quipu}prestashop>synchronization_fe6b4ef25c3826724791f767187003d4'] = 'SINCRONIZA LAS FACTURAS YA EXISTENTES DE TU TIENDA CON QUIPU';
+$_MODULE['<{quipu}prestashop>synchronization_d9e34f2ab0f165102b9da1620526b2f7'] = 'Si acabas de empezar y no tienes ninguna factura ni pago confirmado, omite este paso.';
+$_MODULE['<{quipu}prestashop>synchronization_133f0a1aab0c94472879305dfa6bd257'] = 'En caso que tengas facturas ya existentes en tu Prestashop, puedes sincronizarlas con Quipu para tener todos tus ingresos centralizados en un mismo lugar. Quipu copiará la serie de numeración de tus facturas ya creadas.';
+$_MODULE['<{quipu}prestashop>synchronization_93a8338380e1a8df1f1bf0294a0cd8b5'] = 'En las facturas rectificativas se añadirá la letra R como prefijo para que las diferencies del resto. Por ejemplo, una factura rectificativa con numeración 13 en Prestashop se importará como R13 en Quipu.';
+$_MODULE['<{quipu}prestashop>synchronization_8627813f208ddbebe9a238113f3f97f8'] = 'Sincroniza ahora';
+$_MODULE['<{quipu}prestashop>synchronization_41da24d6b7bad51e84128e729bff5919'] = 'Sincronización realizada.';
